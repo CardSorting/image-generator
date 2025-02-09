@@ -1,0 +1,89 @@
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+  <div class="mb-8 flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+      <%= link_to generations_path, class: "text-indigo-600 hover:text-indigo-500 flex items-center" do %>
+        <svg class="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        Back to gallery
+      <% end %>
+    </div>
+    <%= link_to "Create New Image", new_generation_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" %>
+  </div>
+
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+    <div class="p-6">
+      <div class="flex items-start justify-between">
+        <div>
+          <h1 class="text-2xl font-medium text-gray-900 mb-2">Generation Details</h1>
+          <p class="text-gray-600"><%= @generation.prompt %></p>
+        </div>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <%= @generation.status == 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
+          <%= @generation.status.titleize %>
+        </span>
+      </div>
+
+      <div class="mt-6">
+        <% if @generation.image_url.present? %>
+          <div class="rounded-lg overflow-hidden bg-gray-100">
+            <%= image_tag @generation.image_url, class: "w-full h-full object-contain" %>
+          </div>
+          
+          <div class="mt-4">
+            <%= link_to @generation.image_url, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50", target: "_blank", download: true do %>
+              <svg class="h-5 w-5 mr-2 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+              Download Image
+            <% end %>
+          </div>
+        <% else %>
+          <div class="rounded-lg bg-gray-100 p-12 flex items-center justify-center">
+            <div class="text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <p class="mt-4 text-gray-500">Processing your image...</p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h3 class="text-sm font-medium text-gray-500">Style</h3>
+          <p class="mt-1 text-sm text-gray-900"><%= @generation.style.titleize %></p>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h3 class="text-sm font-medium text-gray-500">Size</h3>
+          <p class="mt-1 text-sm text-gray-900"><%= @generation.size %></p>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h3 class="text-sm font-medium text-gray-500">Created</h3>
+          <p class="mt-1 text-sm text-gray-900"><%= time_ago_in_words(@generation.created_at) %> ago</p>
+        </div>
+      </div>
+
+      <% if @generation.error_message.present? %>
+        <div class="mt-6">
+          <div class="rounded-md bg-red-50 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Generation Error</h3>
+                <p class="mt-2 text-sm text-red-700"><%= @generation.error_message %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
