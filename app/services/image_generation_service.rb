@@ -86,6 +86,26 @@ class ImageGenerationService
       Rails.logger.debug "API Response Body: #{response.body}" # Log the response body
       result = JSON.parse(response.body)
       
+      Rails.logger.debug "Raw API Response: #{response.body}"
+      
+      # Check for API subscription error
+      if result["status"] == "error" && result["messege"].present?
+        @generation.update(
+          status: Generation::STATUSES[:failed],
+          error_message: result["messege"]
+        )
+        return false
+      end
+      
+      # Check output field
+      if !result["output"]
+        @generation.update(
+          status: Generation::STATUSES[:failed],
+          error_message: "API response missing output field"
+        )
+        return false
+      end
+      
       if result["status"] == "success" && result["output"].is_a?(Array) && !result["output"].empty?
         image_url = result["output"].first
         generation_time = result["generationTime"]
