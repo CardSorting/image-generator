@@ -1,6 +1,12 @@
 #!/usr/bin/env ruby
-
 require_relative "../config/environment"
-require "solid_queue/cli"
+puts "Starting job processor in #{Rails.env} environment..."
 
-SolidQueue::Cli.start(ARGV)
+begin
+  require "solid_queue/cli"
+  SolidQueue::Cli.start(["start"])
+rescue => e
+  puts "Error starting job processor: #{e.message}"
+  puts e.backtrace
+  exit 1
+end
