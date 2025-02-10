@@ -2,7 +2,7 @@ completed:
   user: one
   prompt: A beautiful mountain landscape at sunset
   style: natural
-  size: 512x512
+  size: 1024x576
   status: completed
   image_url: https://ap-east-1.tensorart.cloud/v1/jobs/123/result
   error_message: 
@@ -11,7 +11,7 @@ processing:
   user: one
   prompt: A futuristic city skyline
   style: artistic
-  size: 1024x1024
+  size: 576x1024
   status: processing
   image_url: 
   error_message: 
@@ -20,7 +20,7 @@ failed:
   user: two
   prompt: A cartoon character
   style: cartoon
-  size: 256x256
+  size: 1024x1024
   status: failed
   image_url: 
   error_message: API request failed with status 500

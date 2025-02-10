@@ -3,22 +3,25 @@ require 'json'
 require 'net/http'
 
 class ImageGenerationService
-  TENSOR_API_ENDPOINT = 'https://ap-east-1.tensorart.cloud'
-  TOKEN = '92cad8c1-0b2c-4559-b8bc-a2d100f48190'
-
   def initialize(generation)
     @generation = generation
+    @api_endpoint = Rails.application.credentials.tensor[:api_endpoint]
+    @api_token = Rails.application.credentials.tensor[:api_token]
+    
+    unless @api_endpoint && @api_token
+      raise "Missing Tensor API credentials. Please set tensor.api_endpoint and tensor.api_token in credentials.yml.enc"
+    end
   end
 
   def generate
-    url = URI("#{TENSOR_API_ENDPOINT}/v1/jobs")
+    url = URI("#{@api_endpoint}/v1/jobs")
     https = Net::HTTP.new(url.host, url.port)
     https.use_ssl = true
 
     request = Net::HTTP::Post.new(url)
     request["Content-Type"] = "application/json; charset=UTF-8"
     request["Accept"] = "application/json"
-    request["Authorization"] = "Bearer #{TOKEN}"
+    request["Authorization"] = "Bearer #{@api_token}"
     request.body = build_request_body
 
     @generation.update(status: Generation::STATUSES[:processing])
@@ -67,9 +70,11 @@ class ImageGenerationService
   end
 
   def model_for_style
-    # Using a default model ID from Tensor API
-    # This should be updated with actual model IDs from Tensor Art
-    "600423083519508503"
+    models = Rails.application.credentials.tensor[:models]
+    return models[@generation.style] if models&.dig(@generation.style)
+    
+    # Fallback to default model if style-specific model not found
+    models&.dig('default') || "600423083519508503"
   end
 
   def handle_response(response)
@@ -78,7 +83,7 @@ class ImageGenerationService
       job_id = result["job_id"]
       @generation.update(
         status: Generation::STATUSES[:completed],
-        image_url: "#{TENSOR_API_ENDPOINT}/v1/jobs/#{job_id}/result"
+        image_url: "#{@api_endpoint}/v1/jobs/#{job_id}/result"
       )
       true
     else
