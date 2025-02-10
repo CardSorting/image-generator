@@ -1,19 +1,35 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
+completed:
   user: one
-  prompt: MyText
-  style: MyString
-  size: MyString
-  status: MyString
-  image_url: MyString
-  error_message: MyText
+  prompt: A beautiful mountain landscape at sunset
+  style: natural
+  size: 512x512
+  status: completed
+  image_url: https://ap-east-1.tensorart.cloud/v1/jobs/123/result
+  error_message: 
 
-two:
+processing:
+  user: one
+  prompt: A futuristic city skyline
+  style: artistic
+  size: 1024x1024
+  status: processing
+  image_url: 
+  error_message: 
+
+failed:
   user: two
-  prompt: MyText
-  style: MyString
-  size: MyString
-  status: MyString
-  image_url: MyString
-  error_message: MyText
+  prompt: A cartoon character
+  style: cartoon
+  size: 256x256
+  status: failed
+  image_url: 
+  error_message: API request failed with status 500
+
+pending:
+  user: two
+  prompt: A realistic portrait
+  style: realistic
+  size: 512x512
+  status: pending
+  image_url: 
+  error_message:

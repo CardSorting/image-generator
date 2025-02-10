@@ -7,6 +7,16 @@ class GenerationsController < ApplicationController
   end
 
   def show
+    respond_to do |format|
+      format.html
+      format.json { 
+        render json: {
+          status: @generation.status,
+          image_url: @generation.image_url,
+          error_message: @generation.error_message
+        }
+      }
+    end
   end
 
   def new
@@ -17,16 +27,10 @@ class GenerationsController < ApplicationController
     @generation = current_user.generations.build(generation_params)
 
     if @generation.save
-      # TODO: In a real implementation, we would:
-      # 1. Trigger a background job to handle the AI generation
-      # 2. Update the status via webhooks or polling
-      # For now, we'll just simulate success
-      @generation.update(
-        status: Generation::STATUSES[:completed],
-        image_url: "https://placekitten.com/512/512" # Placeholder image
-      )
+      # Enqueue the background job for image generation
+      GenerateImageJob.perform_later(@generation.id)
       
-      redirect_to @generation, notice: 'Image generation was successfully initiated.'
+      redirect_to @generation, notice: 'Image generation has been initiated. Please wait while we process your request.'
     else
       render :new, status: :unprocessable_entity
     end
@@ -36,6 +40,8 @@ class GenerationsController < ApplicationController
 
   def set_generation
     @generation = current_user.generations.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to generations_path, alert: 'Image generation not found.'
   end
 
   def generation_params

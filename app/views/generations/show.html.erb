@@ -1,4 +1,7 @@
-<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8" 
+     data-controller="generation"
+     data-generation-id-value="<%= @generation.id %>"
+     data-generation-refresh-interval-value="2000">
   <div class="mb-8 flex justify-between items-center">
     <div class="flex items-center space-x-4">
       <%= link_to generations_path, class: "text-indigo-600 hover:text-indigo-500 flex items-center" do %>
@@ -18,15 +21,22 @@
           <h1 class="text-2xl font-medium text-gray-900 mb-2">Generation Details</h1>
           <p class="text-gray-600"><%= @generation.prompt %></p>
         </div>
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <%= @generation.status == 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
-          <%= @generation.status.titleize %>
+        <span data-generation-target="status" 
+              data-status="<%= @generation.status %>"
+              class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                     <%= @generation.status == 'completed' ? 'bg-green-100 text-green-800' : 
+                         @generation.status == 'failed' ? 'bg-red-100 text-red-800' : 
+                         'bg-yellow-100 text-yellow-800' %>">
+          <%= @generation.status.upcase %>
         </span>
       </div>
 
       <div class="mt-6">
         <% if @generation.image_url.present? %>
           <div class="rounded-lg overflow-hidden bg-gray-100">
-            <%= image_tag @generation.image_url, class: "w-full h-full object-contain" %>
+            <%= image_tag @generation.image_url, 
+                         class: "w-full h-full object-contain #{'hidden' unless @generation.status == 'completed'}", 
+                         data: { generation_target: "image" } %>
           </div>
           
           <div class="mt-4">
@@ -67,23 +77,21 @@
         </div>
       </div>
 
-      <% if @generation.error_message.present? %>
-        <div class="mt-6">
-          <div class="rounded-md bg-red-50 p-4">
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <div class="ml-3">
-                <h3 class="text-sm font-medium text-red-800">Generation Error</h3>
-                <p class="mt-2 text-sm text-red-700"><%= @generation.error_message %></p>
-              </div>
+      <div data-generation-target="error" class="hidden mt-6">
+        <div class="rounded-md bg-red-50 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">Generation Error</h3>
+              <p class="mt-2 text-sm text-red-700"><%= @generation.error_message %></p>
             </div>
           </div>
         </div>
-      <% end %>
+      </div>
     </div>
   </div>
 </div>

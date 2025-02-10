@@ -1,31 +1,31 @@
 class Generation < ApplicationRecord
   belongs_to :user
-  
+
+  # Status constants
   STATUSES = {
-    pending: "pending",
-    processing: "processing",
-    completed: "completed",
-    failed: "failed"
+    pending: 'pending',
+    processing: 'processing',
+    completed: 'completed',
+    failed: 'failed'
   }.freeze
 
-  SIZES = {
-    small: "256x256",
-    medium: "512x512",
-    large: "1024x1024"
-  }.freeze
+  # Available styles
+  STYLES = %w[natural artistic cartoon realistic].freeze
 
-  STYLES = {
-    natural: "natural",
-    artistic: "artistic",
-    cartoon: "cartoon",
-    realistic: "realistic"
-  }.freeze
+  # Available sizes
+  SIZES = %w[256x256 512x512 1024x1024].freeze
 
-  validates :prompt, presence: true, length: { minimum: 3, maximum: 1000 }
-  validates :size, presence: true, inclusion: { in: SIZES.values }
-  validates :style, presence: true, inclusion: { in: STYLES.keys.map(&:to_s) }
+  # Validations
+  validates :prompt, presence: true, length: { minimum: 1, maximum: 1000 }
+  validates :style, presence: true, inclusion: { in: STYLES }
+  validates :size, presence: true, inclusion: { in: SIZES }
   validates :status, presence: true, inclusion: { in: STATUSES.values }
 
+  # Scopes
+  scope :recent, -> { order(created_at: :desc) }
+  scope :by_status, ->(status) { where(status: status) }
+
+  # Callbacks
   before_validation :set_default_status, on: :create
 
   private
