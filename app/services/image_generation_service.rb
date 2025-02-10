@@ -84,10 +84,21 @@ class ImageGenerationService
   def handle_response(response)
     if response.code.to_i == 200
       result = JSON.parse(response.body)
-      if result["status"] == "success" && result["output"]&.first
+      
+      if result["status"] == "success" && result["output"].is_a?(Array) && !result["output"].empty?
+        image_url = result["output"].first
+        generation_time = result["generationTime"]
+        
+        metadata = result["meta"]&.slice(
+          "prompt", "model_id", "scheduler", "guidance_scale", 
+          "seed", "steps", "W", "H"
+        )
+
         @generation.update(
           status: Generation::STATUSES[:completed],
-          image_url: result["output"].first
+          image_url: image_url,
+          metadata: metadata,
+          generation_time: generation_time
         )
         true
       else

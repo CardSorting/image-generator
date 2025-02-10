@@ -13,7 +13,9 @@ class GenerationsController < ApplicationController
         render json: {
           status: @generation.status,
           image_url: @generation.image_url,
-          error_message: @generation.error_message
+          error_message: @generation.error_message,
+          metadata: @generation.metadata,
+          generation_time: @generation.generation_time
         }
       }
     end
