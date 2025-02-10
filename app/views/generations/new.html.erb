@@ -37,7 +37,7 @@
     <div>
       <%= f.label :style, class: "block text-sm font-medium text-gray-700" %>
       <div class="mt-1">
-        <%= f.select :style, Generation::STYLES.keys.map { |style| [style.to_s.titleize, style] }, {}, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" %>
+        <%= f.select :style, Generation::STYLES.map { |style| [style.titleize, style] }, {}, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" %>
       </div>
     </div>
 

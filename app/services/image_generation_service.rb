@@ -5,11 +5,12 @@ require 'net/http'
 class ImageGenerationService
   def initialize(generation)
     @generation = generation
-    @api_endpoint = Rails.application.credentials.tensor[:api_endpoint]
-    @api_token = Rails.application.credentials.tensor[:api_token]
+    credentials = Rails.application.credentials
+    @api_endpoint = credentials.tensor&.api_endpoint || ENV['TENSOR_API_ENDPOINT']
+    @api_token = credentials.tensor&.api_token || ENV['TENSOR_API_TOKEN']
     
     unless @api_endpoint && @api_token
-      raise "Missing Tensor API credentials. Please set tensor.api_endpoint and tensor.api_token in credentials.yml.enc"
+      raise "Missing Tensor API credentials. Please set tensor.api_endpoint and tensor.api_token in credentials.yml.enc or environment variables"
     end
   end
 
@@ -70,11 +71,15 @@ class ImageGenerationService
   end
 
   def model_for_style
-    models = Rails.application.credentials.tensor[:models]
-    return models[@generation.style] if models&.dig(@generation.style)
+    credentials = Rails.application.credentials
+    if credentials.tensor&.models
+      models = credentials.tensor.models
+      return models[@generation.style] if models.key?(@generation.style)
+      return models["default"] if models.key?("default")
+    end
     
-    # Fallback to default model if style-specific model not found
-    models&.dig('default') || "600423083519508503"
+    # Fallback to default model
+    "600423083519508503"
   end
 
   def handle_response(response)
