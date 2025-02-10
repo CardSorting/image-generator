@@ -6,23 +6,21 @@ class ImageGenerationService
   def initialize(generation)
     @generation = generation
     credentials = Rails.application.credentials
-    @api_endpoint = credentials.tensor&.api_endpoint || ENV['TENSOR_API_ENDPOINT']
-    @api_token = credentials.tensor&.api_token || ENV['TENSOR_API_TOKEN']
+    @api_key = credentials.modelslab&.api_key || ENV['MODELSLAB_API_KEY']
+    @model_id = credentials.modelslab&.model_id || ENV['MODELSLAB_MODEL_ID']
     
-    unless @api_endpoint && @api_token
-      raise "Missing Tensor API credentials. Please set tensor.api_endpoint and tensor.api_token in credentials.yml.enc or environment variables"
+    unless @api_key && @model_id
+      raise "Missing ModelsLab API credentials. Please set modelslab.api_key and modelslab.model_id in credentials.yml.enc or environment variables"
     end
   end
 
   def generate
-    url = URI("#{@api_endpoint}/v1/jobs")
+    url = URI("https://modelslab.com/api/v6/images/text2img")
     https = Net::HTTP.new(url.host, url.port)
     https.use_ssl = true
 
     request = Net::HTTP::Post.new(url)
-    request["Content-Type"] = "application/json; charset=UTF-8"
-    request["Accept"] = "application/json"
-    request["Authorization"] = "Bearer #{@api_token}"
+    request["Content-Type"] = "application/json"
     request.body = build_request_body
 
     @generation.update(status: Generation::STATUSES[:processing])
@@ -44,53 +42,61 @@ class ImageGenerationService
 
   def build_request_body
     width, height = @generation.size.split('x').map(&:to_i)
-    JSON.dump({
-      request_id: @generation.id.to_s,
-      stages: [
-        {
-          type: "INPUT_INITIALIZE",
-          inputInitialize: {
-            seed: -1,
-            count: 1
-          }
-        },
-        {
-          type: "DIFFUSION",
-          diffusion: {
-            width: width,
-            height: height,
-            prompts: [{ text: @generation.prompt }],
-            steps: 20,
-            sd_model: model_for_style,
-            clip_skip: 2,
-            cfg_scale: 7
-          }
-        }
-      ]
-    })
-  end
-
-  def model_for_style
-    credentials = Rails.application.credentials
-    if credentials.tensor&.models
-      models = credentials.tensor.models
-      return models[@generation.style] if models.key?(@generation.style)
-      return models["default"] if models.key?("default")
-    end
     
-    # Fallback to default model
-    "600423083519508503"
+    # Map style to enhance_style parameter
+    style_mapping = {
+      "natural" => "photograph",
+      "artistic" => "digital-art",
+      "cartoon" => "anime",
+      "realistic" => "hyperrealism"
+    }
+
+    # Default negative prompt for better quality results
+    negative_prompt = "painting, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, deformed, ugly, blurry, bad anatomy, bad proportions, extra limbs, cloned face, skinny, glitchy, double torso, extra arms, extra hands, mangled fingers, missing lips, ugly face, distorted face, extra legs, anime"
+    
+    JSON.dump({
+      key: @api_key,
+      model_id: @model_id,
+      prompt: @generation.prompt,
+      negative_prompt: negative_prompt,
+      width: width.to_s,
+      height: height.to_s,
+      samples: "1",
+      num_inference_steps: "20", # Capped at 20 per API docs
+      safety_checker: "yes",
+      safety_checker_type: "blur",
+      enhance_prompt: "yes",
+      enhance_style: style_mapping[@generation.style] || "photograph",
+      seed: nil,
+      guidance_scale: 7.5,
+      panorama: "no",
+      self_attention: "yes", # Set to yes for higher quality
+      upscale: "2", # 2x upscaling for better resolution
+      clip_skip: 2,
+      base64: "no",
+      tomesd: "yes",
+      use_karras_sigmas: "yes",
+      highres_fix: "yes",
+      scheduler: "UniPCMultistepScheduler"
+    })
   end
 
   def handle_response(response)
     if response.code.to_i == 200
       result = JSON.parse(response.body)
-      job_id = result["job_id"]
-      @generation.update(
-        status: Generation::STATUSES[:completed],
-        image_url: "#{@api_endpoint}/v1/jobs/#{job_id}/result"
-      )
-      true
+      if result["status"] == "success" && result["output"]&.first
+        @generation.update(
+          status: Generation::STATUSES[:completed],
+          image_url: result["output"].first
+        )
+        true
+      else
+        @generation.update(
+          status: Generation::STATUSES[:failed],
+          error_message: "API request failed: Invalid response format"
+        )
+        false
+      end
     else
       @generation.update(
         status: Generation::STATUSES[:failed],

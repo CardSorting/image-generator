@@ -27,17 +27,31 @@ npm install
 bin/rails db:create db:migrate
 ```
 
-3. Configure the AI API credentials:
+3. Configure the ModelsLab API credentials:
+
+Option 1 - Using credentials.yml.enc:
 ```bash
 EDITOR="code --wait" bin/rails credentials:edit
 ```
 
 Add the following structure:
 ```yaml
-ai_api:
-  endpoint: "YOUR_API_ENDPOINT"
-  # Add any other required API credentials
+modelslab:
+  api_key: "YOUR_API_KEY"
+  model_id: "flux"  # Options: flux, fluxschnell, fluxdev
 ```
+
+Option 2 - Using environment variables:
+Create or update your `.env` file:
+```bash
+MODELSLAB_API_KEY=your_api_key_here
+MODELSLAB_MODEL_ID=flux
+```
+
+Model ID Options:
+- `flux`: Basic text to image
+- `fluxschnell`: Text to image + Image to image
+- `fluxdev`: All features (Text to image, Image to image, Inpaint, ControlNet, Lora)
 
 4. Start Redis for background job processing:
 ```bash
