@@ -33,9 +33,9 @@
 
       <div class="mt-6">
         <% if @generation.image_url.present? %>
-          <div class="rounded-lg overflow-hidden bg-gray-100">
+          <div class="rounded-lg overflow-hidden bg-gray-100 h-[512px]">
             <%= image_tag @generation.image_url, 
-                         class: "w-full h-full object-contain #{'hidden' unless @generation.status == 'completed'}", 
+                         class: "w-full h-full object-contain object-center #{'hidden' unless @generation.status == 'completed'}", 
                          data: { generation_target: "image" } %>
           </div>
           
@@ -87,7 +87,7 @@
           <h3 class="text-sm font-medium text-gray-500 mb-2">Generation Details</h3>
           <div class="bg-gray-50 rounded-lg p-4" data-generation-metadata>
             <dl class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <% @generation.metadata.each do |key, value| %>
+              <% @generation.filtered_metadata.each do |key, value| %>
                 <div>
                   <dt class="text-sm font-medium text-gray-500"><%= key.titleize %></dt>
                   <dd class="mt-1 text-sm text-gray-900"><%= value %></dd>

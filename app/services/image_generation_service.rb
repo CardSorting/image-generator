@@ -63,7 +63,7 @@ class ImageGenerationService
       height: height.to_s,
       samples: "1",
       num_inference_steps: "20", # Capped at 20 per API docs
-      safety_checker: "yes",
+      safety_checker: "no",
       safety_checker_type: "blur",
       enhance_prompt: "yes",
       enhance_style: style_mapping[@generation.style] || "photograph",
@@ -97,19 +97,20 @@ class ImageGenerationService
         return false
       end
       
-      # Check output field
-      if !result["output"]
+      # Check for links field
+      if !result["links"]
         @generation.update(
           status: Generation::STATUSES[:failed],
-          error_message: "API response missing output field"
+          error_message: "API response missing links field"
         )
         return false
       end
       
-      if result["status"] == "success" && result["output"].is_a?(Array) && !result["output"].empty?
-        image_url = result["output"].first
+      if result["status"] == "success" && result["links"].is_a?(Array) && !result["links"].empty?
+        image_url = result["links"].first
         generation_time = result["generationTime"]
         
+        # Extract metadata from the meta field
         metadata = result["meta"]
 
         @generation.update(

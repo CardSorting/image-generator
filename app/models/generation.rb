@@ -52,6 +52,20 @@ class Generation < ApplicationRecord
     dimensions[1]
   end
 
+  def filtered_metadata
+    return {} unless metadata
+    
+    # List of fields to exclude
+    excluded_fields = %w[
+      rescale webhook model_id track_id clip_skip n_samples watermark
+      scale_down file_prefix padding_down padding_right enhance_prompt
+      guidance_scale safety_checker safety_checker_type instant_response
+      id temp base64 opacity
+    ]
+    
+    metadata.reject { |key, _| excluded_fields.include?(key) }
+  end
+
   private
 
   def set_default_status

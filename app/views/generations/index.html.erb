@@ -10,11 +10,11 @@
         <%= link_to generation_path(generation), class: "block group" do %>
           <div class="bg-white rounded-lg shadow-sm overflow-hidden">
             <% if generation.image_url.present? %>
-              <div class="aspect-w-1 aspect-h-1 w-full">
-                <%= image_tag generation.image_url, class: "w-full h-full object-center object-cover group-hover:opacity-75" %>
+              <div class="aspect-square w-full bg-gray-100">
+                <%= image_tag generation.image_url, class: "w-full h-full object-cover object-center group-hover:opacity-75" %>
               </div>
             <% else %>
-              <div class="aspect-w-1 aspect-h-1 w-full bg-gray-100 flex items-center justify-center">
+              <div class="aspect-square w-full bg-gray-100 flex items-center justify-center">
                 <p class="text-gray-500">Processing...</p>
               </div>
             <% end %>
