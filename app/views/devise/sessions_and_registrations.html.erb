@@ -1,12 +1,11 @@
 <div style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; background: linear-gradient(to right, #f3f4f6, #e5e7eb); background-image: url('data:image/svg+xml,%3Csvg width=\'6\' height=\'6\' viewBox=\'0 0 6 6\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.1\' fill-rule=\'evenodd\'%3E%3Cpath d=\'M5 0h1L0 6V5zM6 5v1H5z\'/%3E%3C/g%3E%3C/svg%3E');">
   <div style="width: 100%; max-width: 36rem; text-align: center;">
-    <% if devise_mapping.name == :user %>
+    <% if params[:controller] == 'users/sessions' %>
       <h2 style="font-size: 2.25rem; font-weight: 700; color: #374151; margin-bottom: 1rem; animation: fadeInDown 0.8s ease-out;">Sign in</h2>
       <p style="font-size: 1rem; color: #6b7280; margin-bottom: 1.5rem; animation: fadeInUp 0.8s ease-out 0.2s backwards;">
         Or
       </p>
-        <%= link_to "Create a new account", new_registration_path(resource_name), style: "display: inline-block; background-color: #f3f4f6; color: #7c3aed; font-size: 1rem; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: 1px solid #d1d5db; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); cursor: pointer; transition: background-color: 0.2s, transform: 0.2s, box-shadow: 0.2s; &:hover { background-color: #e5e7eb; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-decoration: none; }" %>
-
+      <%= link_to "Create a new account", new_registration_path(resource_name), style: "display: inline-block; background-color: #f3f4f6; color: #7c3aed; font-size: 1rem; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: 1px solid #d1d5db; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); cursor: pointer; transition: background-color: 0.2s, transform: 0.2s, box-shadow: 0.2s; &:hover { background-color: #e5e7eb; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-decoration: none; }" %>
     <% else %>
       <h2 style="font-size: 2.25rem; font-weight: 700; color: #374151; margin-bottom: 1rem; animation: fadeInDown 0.8s ease-out;">Create an account</h2>
       <p style="font-size: 1rem; color: #6b7280; margin-bottom: 1.5rem; animation: fadeInUp 0.8s ease-out 0.2s backwards;">
@@ -17,7 +16,23 @@
   </div>
 
   <div style="width: 100%; max-width: 36rem; margin-top: 2.5rem; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 0.75rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -5px rgba(0, 0, 0, 0.08); padding: 3.5rem; animation: fadeInUp 0.8s ease-out 0.4s backwards;">
-    <% if devise_mapping.name == :user %>
+    <% if params[:controller] == 'users/sessions' %>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { style: "display: flex; flex-direction: column; gap: 2rem;" }) do |f| %>
+        <div>
+          <%= f.label :email, style: "display: block; font-size: 1.125rem; font-weight: 600; color: #4b5563; margin-bottom: 0.625rem;" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", style: "width: 100%; padding: 0.875rem; border-radius: 0.5rem; border: 1px solid #d1d5db; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); font-size: 1rem; color: #374151; transition: border-color: 0.2s, box-shadow: 0.2s; &:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4); } &:-webkit-autofill { box-shadow: 0 0 0 30px white inset !important; -webkit-text-fill-color: #374151 !important; }" %>
+        </div>
+
+        <div>
+          <%= f.label :password, style: "display: block; font-size: 1.125rem; font-weight: 600; color: #4b5563; margin-bottom: 0.625rem;" %>
+          <%= f.password_field :password, autocomplete: "current-password", style: "width: 100%; padding: 0.875rem; border-radius: 0.5rem; border: 1px solid #d1d5db; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); font-size: 1rem; color: #374151; transition: border-color: 0.2s, box-shadow: 0.2s; &:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4); } &:-webkit-autofill { box-shadow: 0 0 0 30px white inset !important; -webkit-text-fill-color: #374151 !important; }" %>
+        </div>
+
+        <div>
+          <%= f.submit "Sign in", style: "width: 100%; background: linear-gradient(to right, #7c3aed, #6d28d9); color: #fff; font-size: 1.125rem; font-weight: 600; padding: 0.875rem; border-radius: 0.5rem; border: none; box-shadow: 0 4px 8px rgba(124, 58, 237, 0.3); cursor: pointer; transition: background-color: 0.2s, transform: 0.2s, box-shadow: 0.2s; &:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(124, 58, 237, 0.4); }" %>
+        </div>
+      <% end %>
+    <% else %>
       <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { style: "display: flex; flex-direction: column; gap: 2rem;" }) do |f| %>
         <div>
           <%= f.label :email, style: "display: block; font-size: 1.125rem; font-weight: 600; color: #4b5563; margin-bottom: 0.625rem;" %>

@@ -1,5 +1,5 @@
 class GenerationsController < ApplicationController
-  before_action :authenticate_user!, except: [:style_page]
+  before_action :authenticate_user!
   before_action :set_generation, only: [:show]
   before_action :set_style, only: [:new_style]
 

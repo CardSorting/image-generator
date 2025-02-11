@@ -5,9 +5,10 @@ class Users::SessionsController < Devise::SessionsController
 
   # GET /resource/sign_in
   def new
-    super do |resource|
-      render "devise/sessions_and_registrations" and return
-    end
+    self.resource = resource_class.new(sign_in_params)
+    clean_up_passwords(resource)
+    yield resource if block_given?
+    render "devise/sessions_and_registrations"
   end
 
   # POST /resource/sign_in
