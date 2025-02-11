@@ -54,30 +54,6 @@ class GenerationsController < ApplicationController
     render :new
   end
 
-  def style_page
-    @style = params[:style]
-    if Generation::STYLES.include?(@style)
-      # Initialize a new generation with the selected style
-      @generation = Generation.new(style: @style)
-      
-      # Load stats for the style
-      @stats = helpers.style_stats(@style)
-      @avg_generation_time = Generation.where(style: @style, status: 'completed')
-                                     .where('created_at > ?', 7.days.ago)
-                                     .average(:generation_time)
-      
-      # Get example generations
-      @featured_examples = Generation.where(style: @style, status: 'completed')
-                                   .where.not(image_url: nil)
-                                   .order(created_at: :desc)
-                                   .limit(4)
-      
-      render "generations/styles/#{@style}"
-    else
-      redirect_to root_path, alert: "Invalid style selected"
-    end
-  end
-
   def create
     @generation = current_user.generations.build(generation_params)
 
@@ -88,7 +64,7 @@ class GenerationsController < ApplicationController
       redirect_to @generation, notice: 'Image generation has been initiated. Please wait while we process your request.'
     else
       if @generation.style.present? && Generation::STYLES.include?(@generation.style)
-        render "generations/styles/#{@generation.style}", status: :unprocessable_entity
+        redirect_to style_page_styles_path(@generation.style), status: :unprocessable_entity
       else
         render :new, status: :unprocessable_entity
       end

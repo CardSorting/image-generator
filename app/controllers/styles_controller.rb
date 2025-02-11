@@ -28,18 +28,34 @@ class StylesController < ApplicationController
   end
 
   def show
+    # Initialize a new generation for the form
+    @generation = Generation.new(style: @style)
+    
+    # Load stats for the style
+    @stats = helpers.style_stats(@style)
+    @avg_generation_time = Generation.where(style: @style, status: 'completed')
+                                   .where('created_at > ?', 7.days.ago)
+                                   .average(:generation_time)
+    
+    # Get featured examples
+    @featured_examples = Generation.where(style: @style, status: 'completed')
+                                 .where.not(image_url: nil)
+                                 .order(created_at: :desc)
+                                 .limit(4)
+
+    # Get recent generations for the gallery section
     @recent_generations = Generation.where(style: @style)
                                   .where.not(image_url: nil)
                                   .includes(:user)
                                   .order(created_at: :desc)
                                   .limit(9)
 
-    avg_time = Generation.where(style: @style, status: 'completed')
-                         .where('created_at > ?', 7.days.ago)
-                         .average(:generation_time)
-    @stats = {
-      avg_generation_time: avg_time.to_f
-    }
+    # Determine which template to render
+    if request.path.start_with?('/styles/')
+      render @style # This will render app/views/styles/[style].html.erb
+    else
+      render 'show' # This will render app/views/styles/show.html.erb
+    end
   end
 
   def gallery
@@ -93,7 +109,7 @@ class StylesController < ApplicationController
   private
 
   def set_style
-    @style = params[:id]
+    @style = params[:id] || params[:style]
     @presenter = StylePresenter.new(@style)
     
     unless Generation::STYLES.include?(@style)

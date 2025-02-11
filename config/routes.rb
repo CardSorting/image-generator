@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   resources :generations do
     collection do
       get 'new/:style', action: :new_style, as: :new_style
-      get 'styles/:style', action: :style_page, as: :style_page
     end
   end
 
@@ -26,7 +25,8 @@ Rails.application.routes.draw do
 
     collection do
       get :trending # Shows trending styles
-      get 'category/:category', to: 'styles#category', as: :style_category # New route for category filtering
+      get 'category/:category', to: 'styles#category', as: :style_category # Category filtering
+      get ':style', action: :show, as: :style_page # Style detail pages (must be last)
     end
   end
 end
