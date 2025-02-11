@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
-  get "generations/index"
-  get "generations/show"
-  get "generations/new"
-  get "generations/create"
   devise_for :users
   
   authenticate :user do
-    resources :generations, only: [:index, :new, :create, :show]
+    resources :generations, only: [:index, :new, :create, :show] do
+      collection do
+        get 'styles/:style/new', to: 'generations#new_style', as: :new_style
+      end
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

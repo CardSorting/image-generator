@@ -1,6 +1,7 @@
 class GenerationsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_generation, only: [:show]
+  before_action :set_style, only: [:new_style]
 
   def index
     @generations = current_user.generations.order(created_at: :desc)
@@ -25,6 +26,11 @@ class GenerationsController < ApplicationController
     @generation = Generation.new
   end
 
+  def new_style
+    @generation = Generation.new(style: params[:style])
+    render "generations/styles/#{params[:style]}"
+  end
+
   def create
     @generation = current_user.generations.build(generation_params)
 
@@ -34,7 +40,11 @@ class GenerationsController < ApplicationController
       
       redirect_to @generation, notice: 'Image generation has been initiated. Please wait while we process your request.'
     else
-      render :new, status: :unprocessable_entity
+      if @generation.style.present? && Generation::STYLES.include?(@generation.style)
+        render "generations/styles/#{@generation.style}", status: :unprocessable_entity
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 
@@ -48,5 +58,11 @@ class GenerationsController < ApplicationController
 
   def generation_params
     params.require(:generation).permit(:prompt, :style, :size)
+  end
+
+  def set_style
+    unless Generation::STYLES.include?(params[:style].to_s)
+      redirect_to new_generation_path, alert: 'Invalid generation style selected.'
+    end
   end
 end
