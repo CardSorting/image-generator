@@ -6,10 +6,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/sign_up
   def new
-    self.resource = resource_class.new(sign_up_params)
-    self.resource_name = resource_name
-    self.devise_mapping = Devise.mappings[:user]
-    respond_with(resource, serialize_options(resource)) do |format|
+    build_resource
+    respond_to do |format|
       format.html { render "devise/sessions_and_registrations" }
     end
   end
