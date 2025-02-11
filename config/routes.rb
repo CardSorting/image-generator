@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   resources :generations do
     collection do
       get 'new/:style', action: :new_style, as: :new_style
+      get 'styles/:style', action: :style_page, as: :style_page
     end
   end
 

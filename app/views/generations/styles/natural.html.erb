@@ -1,12 +1,248 @@
-<div class="max-w-2xl mx-auto py-8">
-  <h1 class="text-3xl font-bold text-gray-900 mb-4">Natural Style Generation</h1>
-  
-  <p class="mb-8 text-gray-600">
-    Create photorealistic images with natural lighting and textures. Perfect for landscapes, 
-    portraits, and real-world scenes that look like they were captured by a camera.
-  </p>
+<div class="min-h-screen bg-gray-50" data-controller="style-page">
+  <!-- Hero Section -->
+  <div class="bg-gradient-to-b from-green-50 to-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="flex items-center space-x-2 mb-4">
+            <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+              Photography Style
+            </div>
+            <div class="flex items-center text-gray-500 text-sm">
+              <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              4.9 Rating
+            </div>
+          </div>
+          
+          <h1 class="text-4xl font-bold text-gray-900 mb-4">Natural Style Generation</h1>
+          
+          <p class="text-xl text-gray-600 mb-8">
+            Create photorealistic images with natural lighting and textures. Perfect for landscapes, 
+            portraits, and real-world scenes that look like they were captured by a camera.
+          </p>
+          
+          <div class="flex items-center space-x-8 mb-8">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gray-900">10k+</div>
+              <div class="text-sm text-gray-500">Generations</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gray-900">4.9k</div>
+              <div class="text-sm text-gray-500">Likes</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-gray-900">98%</div>
+              <div class="text-sm text-gray-500">Success Rate</div>
+            </div>
+          </div>
 
-  <%= render "form", 
-    prompt_placeholder: "Example: A serene mountain lake at sunrise, with morning mist rising from the water...", 
-    prompt_help: "Focus on natural elements, lighting conditions, and realistic details you'd see in a photograph." %>
+          <div class="flex space-x-4">
+            <% if user_signed_in? %>
+              <button class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
+                data-action="style-page#scrollToForm">
+                Try Now
+              </button>
+            <% else %>
+              <%= link_to new_user_session_path, class: "bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors" do %>
+                Sign in to Try
+              <% end %>
+            <% end %>
+            <button class="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              data-action="style-page#shareStyle">
+              Share Style
+            </button>
+          </div>
+        </div>
+        
+        <div class="relative">
+          <div class="aspect-w-4 aspect-h-3 rounded-2xl overflow-hidden shadow-xl">
+            <img src="https://placekitten.com/800/600" alt="Example Natural Style Image" class="object-cover">
+          </div>
+          <div class="absolute -bottom-4 -right-4 bg-white rounded-lg shadow-lg p-3">
+            <div class="text-sm font-medium text-gray-900">Trending Score</div>
+            <div class="text-2xl font-bold text-green-600">9.8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <!-- Left Column -->
+      <div class="lg:col-span-2">
+        <!-- Generation Form -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8" data-style-page-target="form">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Your Image</h2>
+          <% if user_signed_in? %>
+            <%= render "form", 
+              prompt_placeholder: "Example: A serene mountain lake at sunrise, with morning mist rising from the water...", 
+              prompt_help: "Focus on natural elements, lighting conditions, and realistic details you'd see in a photograph." %>
+          <% else %>
+            <div class="text-center py-8">
+              <h3 class="text-lg font-medium text-gray-900 mb-2">Sign in to Generate Images</h3>
+              <p class="text-gray-600 mb-4">Create an account or sign in to start generating natural style images.</p>
+              <%= link_to "Sign in", new_user_session_path, class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Tips & Examples -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Tips for Best Results</h2>
+          
+          <div class="space-y-6">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">Be Specific with Lighting</h3>
+                <p class="text-gray-600">Mention time of day, weather conditions, and light sources for more realistic results.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">Include Environmental Details</h3>
+                <p class="text-gray-600">Describe surrounding elements, textures, and atmospheric conditions.</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">Consider Composition</h3>
+                <p class="text-gray-600">Specify foreground, middle ground, and background elements for depth.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example Gallery -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Featured Examples</h2>
+            <div class="flex space-x-2">
+              <button class="px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                data-style-page-target="galleryFilter"
+                data-action="style-page#filterGallery"
+                data-filter="most-liked">
+                Most Liked
+              </button>
+              <button class="px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                data-style-page-target="galleryFilter"
+                data-action="style-page#filterGallery"
+                data-filter="recent">
+                Recent
+              </button>
+              <button class="px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md"
+                data-style-page-target="galleryFilter"
+                data-action="style-page#filterGallery"
+                data-filter="trending">
+                Trending
+              </button>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4" data-style-page-target="gallery">
+            <% 4.times do %>
+              <div class="relative group">
+                <div class="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden">
+                  <img src="https://placekitten.com/400/300" alt="Example Generation" class="object-cover">
+                </div>
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <button class="bg-white text-gray-900 px-4 py-2 rounded-lg text-sm font-medium">
+                    View Details
+                  </button>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="space-y-8">
+        <!-- Technical Specs -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Technical Specifications</h2>
+          
+          <div class="space-y-4">
+            <div>
+              <div class="text-sm font-medium text-gray-500">Available Sizes</div>
+              <div class="mt-1 flex flex-wrap gap-2">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                  576x1024
+                </span>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                  1024x576
+                </span>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                  1024x1024
+                </span>
+              </div>
+            </div>
+            
+            <div>
+              <div class="text-sm font-medium text-gray-500">Average Generation Time</div>
+              <div class="text-gray-900">~15 seconds</div>
+            </div>
+            
+            <div>
+              <div class="text-sm font-medium text-gray-500">Success Rate</div>
+              <div class="text-gray-900">98%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Community Stats -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h2 class="text-xl font-bold text-gray-900 mb-4">Community Stats</h2>
+          
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <div class="text-sm font-medium text-gray-500">Total Generations</div>
+              <div class="text-gray-900 font-medium">10,234</div>
+            </div>
+            
+            <div class="flex justify-between items-center">
+              <div class="text-sm font-medium text-gray-500">Unique Users</div>
+              <div class="text-gray-900 font-medium">3,456</div>
+            </div>
+            
+            <div class="flex justify-between items-center">
+              <div class="text-sm font-medium text-gray-500">Avg. Daily Usage</div>
+              <div class="text-gray-900 font-medium">342</div>
+            </div>
+            
+            <div class="mt-6">
+              <div class="text-sm font-medium text-gray-500 mb-2">Trending Score History</div>
+              <div class="h-24 bg-gray-50 rounded-lg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

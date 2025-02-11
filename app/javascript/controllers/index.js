@@ -6,6 +6,9 @@ import { application } from "controllers/application"
 import InfiniteScrollController from "./infinite_scroll_controller"
 application.register("infinite-scroll", InfiniteScrollController)
 
+import StylePageController from "./style_page_controller"
+application.register("style-page", StylePageController)
+
 // Eager load all controllers defined in the import map under controllers/**/*_controller
 import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
 eagerLoadControllersFrom("controllers", application)

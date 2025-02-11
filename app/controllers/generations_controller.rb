@@ -1,5 +1,5 @@
 class GenerationsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:style_page]
   before_action :set_generation, only: [:show]
   before_action :set_style, only: [:new_style]
 
@@ -50,8 +50,32 @@ class GenerationsController < ApplicationController
   end
 
   def new_style
-    @generation = Generation.new(style: params[:style])
-    render "generations/styles/#{params[:style]}"
+    @style = params[:style]
+    render :new
+  end
+
+  def style_page
+    @style = params[:style]
+    if Generation::STYLES.include?(@style)
+      # Initialize a new generation with the selected style
+      @generation = Generation.new(style: @style)
+      
+      # Load stats for the style
+      @stats = helpers.style_stats(@style)
+      @avg_generation_time = Generation.where(style: @style, status: 'completed')
+                                     .where('created_at > ?', 7.days.ago)
+                                     .average(:generation_time)
+      
+      # Get example generations
+      @featured_examples = Generation.where(style: @style, status: 'completed')
+                                   .where.not(image_url: nil)
+                                   .order(created_at: :desc)
+                                   .limit(4)
+      
+      render "generations/styles/#{@style}"
+    else
+      redirect_to root_path, alert: "Invalid style selected"
+    end
   end
 
   def create
