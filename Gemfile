@@ -77,3 +77,5 @@ group :test do
 end
 
 gem "kaminari", "~> 1.2"
+
+gem "importmap-rails", "~> 2.1"
