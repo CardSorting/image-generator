@@ -13,6 +13,13 @@ class StylesController < ApplicationController
                                   .includes(:user)
                                   .order(created_at: :desc)
                                   .limit(9)
+
+    avg_time = Generation.where(style: @style, status: 'completed')
+                         .where('created_at > ?', 7.days.ago)
+                         .average(:generation_time)
+    @stats = {
+      avg_generation_time: avg_time.to_f
+    }
   end
 
   def gallery
