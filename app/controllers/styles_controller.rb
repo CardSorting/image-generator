@@ -3,8 +3,18 @@ class StylesController < ApplicationController
   before_action :authenticate_user!, only: [:try]
 
   def index
-    @styles = Generation::STYLES.map { |style| StylePresenter.new(style) }
+    styles = Generation::STYLES
+    @styles = styles.map { |style| StylePresenter.new(style) }
     @trending_styles = @styles.select(&:is_trending?).first(3)
+  end
+
+  def category
+    styles = Generation::STYLES
+    if params[:category].present?
+      styles = styles.select { |style| style[:category].to_s == params[:category] }
+    end
+    @styles = styles.map { |style| StylePresenter.new(style) }
+    render partial: 'styles/category'
   end
 
   def show

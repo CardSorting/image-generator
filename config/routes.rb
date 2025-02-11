@@ -25,6 +25,7 @@ Rails.application.routes.draw do
 
     collection do
       get :trending # Shows trending styles
+      get 'category/:category', to: 'styles#category', as: :style_category # New route for category filtering
     end
   end
 end
