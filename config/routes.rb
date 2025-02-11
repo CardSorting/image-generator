@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
-  # Authentication routes
-  devise_for :users
-  
+  devise_for :users, controllers: {
+    sessions: 'users/sessions',
+    registrations: 'users/registrations'
+  }
+
   # Root route
   root "home#index"
   
