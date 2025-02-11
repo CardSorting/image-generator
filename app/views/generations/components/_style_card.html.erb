@@ -1,0 +1,60 @@
+<%# Local variables: presenter (StylePresenter instance) %>
+
+<div class="<%= presenter.card_classes %>" 
+     data-controller="style-card"
+     data-style="<%= presenter.style_name %>">
+  
+  <div class="<%= presenter.image_container_classes %>">
+    <% if (image_url = sample_image_for_style(presenter.style_name)) %>
+      <%= image_tag image_url, class: presenter.image_classes %>
+    <% else %>
+      <div class="<%= presenter.placeholder_classes %>">
+        <span class="text-4xl font-handwriting text-gray-500">
+          <%= presenter.title %>
+        </span>
+      </div>
+    <% end %>
+    
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+    <h2 class="absolute top-4 left-4 text-3xl font-handwriting text-white" 
+        style="text-shadow: 2px 2px 4px #000;">
+      <%= presenter.title %>
+    </h2>
+
+    <%# Example prompt tooltip %>
+    <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div class="bg-black/75 text-white text-sm rounded-lg p-2 max-w-[200px]">
+        <p class="font-light italic">
+          "<%=presenter.example_prompt %>"
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4">
+    <p class="font-handwriting text-sm text-gray-900 truncate">
+      <%= presenter.title %>
+    </p>
+    <p class="text-gray-600 text-xs mt-2">
+      <%= presenter.description %>
+    </p>
+    
+    <%# Similar styles %>
+    <% if presenter.similar_styles.any? %>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <% presenter.similar_styles.each do |similar_style| %>
+          <span class="text-xs text-gray-500 bg-white/50 rounded-full px-2 py-1">
+            Similar to <%= StyleRegistry.get_style(similar_style)[:title] %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="mt-4 flex justify-center">
+      <%= link_to new_style_generations_path(presenter.style_name), 
+          class: "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200" do %>
+        Choose <%= presenter.title %>
+      <% end %>
+    </div>
+  </div>
+</div>

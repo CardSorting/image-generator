@@ -1,117 +1,44 @@
-<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-  <h1 class="text-3xl font-bold text-gray-900 mb-8">Choose Your Generation Style</h1>
+<div class="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+  <div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Choose Your Generation Style</h1>
+    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+      Select a style that best matches your creative vision. Each style offers unique characteristics and results.
+    </p>
+  </div>
 
-  <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-    <!-- Natural Style Card -->
-    <div class="transform transition-all duration-500 ease-in-out hover:animate-float">
-      <div class="polaroid-wrapper group odd:rotate-1 even:-rotate-1">
-        <div class="bg-polaroid-frame p-5 pb-20 rounded shadow-polaroid hover:shadow-polaroid-hover transform transition-all duration-500 ease-in-out hover:animate-wiggle relative overflow-hidden border border-polaroid-border">
-          <div class="aspect-[2/3] w-full overflow-hidden bg-gray-100 relative">
-            <% if (image_url = sample_image_for_style('natural')) %>
-              <%= image_tag image_url, class: "w-full h-full object-cover group-hover:opacity-90" %>
-            <% else %>
-              <%= style_placeholder('natural') %>
-            <% end %>
-            <div class="absolute inset-0 pointer-events-none opacity-[0.085] mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\' opacity=\'0.5\'/%3E%3C/svg%3E')"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-             <h2 class="absolute top-4 left-4 text-3xl font-handwriting text-white" style="text-shadow: 2px 2px 4px #000;">Natural</h2>
-          </div>
+  <%# Render each style category %>
+  <div class="space-y-12">
+    <% StyleRegistry.categories.each do |category, _| %>
+      <%= render "generations/components/style_category", category: category %>
+    <% end %>
+  </div>
 
-          <div class="mt-4 text-center relative pb-20">
-            <p class="font-handwriting text-sm text-gray-900 truncate px-2 -rotate-1"><%= "Natural Style" %></p>
-            <p class="text-gray-600 text-xs mt-2 px-2 truncate -rotate-1">Photorealistic images with natural lighting and textures.</p>
-            <div class="mt-3 flex justify-center items-center space-x-2">
-              <%= link_to new_style_generations_path(:natural), class: "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700" do %>
-                Choose Natural
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Artistic Style Card -->
-    <div class="transform transition-all duration-500 ease-in-out hover:animate-float">
-      <div class="polaroid-wrapper group odd:rotate-1 even:-rotate-1">
-        <div class="bg-polaroid-frame p-5 pb-20 rounded shadow-polaroid hover:shadow-polaroid-hover transform transition-all duration-500 ease-in-out hover:animate-wiggle relative overflow-hidden border border-polaroid-border">
-          <div class="aspect-[2/3] w-full overflow-hidden bg-gray-100 relative">
-            <% if (image_url = sample_image_for_style('artistic')) %>
-              <%= image_tag image_url, class: "w-full h-full object-cover group-hover:opacity-90" %>
-            <% else %>
-              <%= style_placeholder('artistic') %>
-            <% end %>
-            <div class="absolute inset-0 pointer-events-none opacity-[0.085] mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\' opacity=\'0.5\'/%3E%3C/svg%3E')"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-             <h2 class="absolute top-4 left-4 text-3xl font-handwriting text-white" style="text-shadow: 2px 2px 4px #000;">Artistic</h2>
-          </div>
-
-          <div class="mt-4 text-center relative pb-20">
-            <p class="font-handwriting text-sm text-gray-900 truncate px-2 -rotate-1"><%= "Artistic Style" %></p>
-            <p class="text-gray-600 text-xs mt-2 px-2 truncate -rotate-1">Unique artistic interpretations with creative flair.</p>
-            <div class="mt-3 flex justify-center items-center space-x-2">
-              <%= link_to new_style_generations_path(:artistic), class: "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700" do %>
-                Choose Artistic
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cartoon Style Card -->
-    <div class="transform transition-all duration-500 ease-in-out hover:animate-float">
-      <div class="polaroid-wrapper group odd:rotate-1 even:-rotate-1">
-        <div class="bg-polaroid-frame p-5 pb-20 rounded shadow-polaroid hover:shadow-polaroid-hover transform transition-all duration-500 ease-in-out hover:animate-wiggle relative overflow-hidden border border-polaroid-border">
-          <div class="aspect-[2/3] w-full overflow-hidden bg-gray-100 relative">
-            <% if (image_url = sample_image_for_style('cartoon')) %>
-              <%= image_tag image_url, class: "w-full h-full object-cover group-hover:opacity-90" %>
-            <% else %>
-              <%= style_placeholder('cartoon') %>
-            <% end %>
-            <div class="absolute inset-0 pointer-events-none opacity-[0.085] mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\' opacity=\'0.5\'/%3E%3C/svg%3E')"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-             <h2 class="absolute top-4 left-4 text-3xl font-handwriting text-white" style="text-shadow: 2px 2px 4px #000;">Cartoon</h2>
-          </div>
-
-          <div class="mt-4 text-center relative pb-20">
-            <p class="font-handwriting text-sm text-gray-900 truncate px-2 -rotate-1"><%= "Cartoon Style" %></p>
-            <p class="text-gray-600 text-xs mt-2 px-2 truncate -rotate-1">Fun, animated-style images with bold lines and vibrant colors.</p>
-            <div class="mt-3 flex justify-center items-center space-x-2">
-              <%= link_to new_style_generations_path(:cartoon), class: "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700" do %>
-                Choose Cartoon
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Realistic Style Card -->
-    <div class="transform transition-all duration-500 ease-in-out hover:animate-float">
-      <div class="polaroid-wrapper group odd:rotate-1 even:-rotate-1">
-        <div class="bg-polaroid-frame p-5 pb-20 rounded shadow-polaroid hover:shadow-polaroid-hover transform transition-all duration-500 ease-in-out hover:animate-wiggle relative overflow-hidden border border-polaroid-border">
-          <div class="aspect-[2/3] w-full overflow-hidden bg-gray-100 relative">
-            <% if (image_url = sample_image_for_style('realistic')) %>
-              <%= image_tag image_url, class: "w-full h-full object-cover group-hover:opacity-90" %>
-            <% else %>
-              <%= style_placeholder('realistic') %>
-            <% end %>
-            <div class="absolute inset-0 pointer-events-none opacity-[0.085] mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\' opacity=\'0.5\'/%3E%3C/svg%3E')"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-             <h2 class="absolute top-4 left-4 text-3xl font-handwriting text-white" style="text-shadow: 2px 2px 4px #000;">Realistic</h2>
-          </div>
-
-          <div class="mt-4 text-center relative pb-20">
-            <p class="font-handwriting text-sm text-gray-900 truncate px-2 -rotate-1"><%= "Realistic Style" %></p>
-            <p class="text-gray-600 text-xs mt-2 px-2 truncate -rotate-1">Highly detailed, photorealistic images with precise textures and lighting.</p>
-            <div class="mt-3 flex justify-center items-center space-x-2">
-              <%= link_to new_style_generations_path(:realistic), class: "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700" do %>
-                Choose Realistic
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <%# Help text %>
+  <div class="mt-12 text-center text-sm text-gray-500">
+    <p>Hover over any style card to see example prompts and similar styles.</p>
+    <p>Each style is optimized for different types of images and creative goals.</p>
   </div>
 </div>
+
+<%# Add custom animations %>
+<% content_for :head do %>
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .hover\:animate-float:hover {
+      animation: float 2s ease-in-out infinite;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-1deg); }
+      50% { transform: rotate(1deg); }
+    }
+
+    .hover\:animate-wiggle:hover {
+      animation: wiggle 1s ease-in-out infinite;
+    }
+  </style>
+<% end %>
