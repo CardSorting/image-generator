@@ -26,8 +26,9 @@
           <div class="flex">
             <%= link_to "AI Image Generator", root_path, class: "flex items-center px-2 text-gray-900 font-medium" %>
           </div>
-          <div class="flex items-center">
+          <div class="flex items-center space-x-4">
             <% if user_signed_in? %>
+              <%= link_to "Create New Image", new_generation_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" %>
               <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
             <% else %>
               <%= link_to "Sign in", new_user_session_path, class: "text-gray-600 hover:text-gray-900" %>
