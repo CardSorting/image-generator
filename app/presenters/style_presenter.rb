@@ -57,19 +57,19 @@ class StylePresenter
   end
 
   def views_count
-    stats[:views][:count]
+    stats[:total_views]
   end
 
   def likes_count
-    stats[:likes][:count]
+    stats[:total_likes]
   end
 
   def bookmarks_count
-    stats[:bookmarks][:count]
+    stats[:total_bookmarks]
   end
 
   def shares_count
-    stats[:shares][:count]
+    stats[:total_shares]
   end
 
   def engagement_rate

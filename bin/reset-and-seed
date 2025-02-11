@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+echo "Stopping Rails server..."
+if [ -f tmp/pids/server.pid ]; then
+  kill -9 $(cat tmp/pids/server.pid)
+  rm tmp/pids/server.pid
+fi
+
+echo "Dropping connections..."
+psql -d postgres -c "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'image_generator_development' AND pid <> pg_backend_pid();"
+
+echo "Resetting database..."
+bin/rails db:reset
+
+echo "Starting Rails server..."
+bin/rails server -d

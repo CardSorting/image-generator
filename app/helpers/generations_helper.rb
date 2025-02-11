@@ -38,22 +38,10 @@ module GenerationsHelper
 
     {
       total_generations: total_generations,
-      views: {
-        count: total_views,
-        label: 'Views'
-      },
-      likes: {
-        count: total_likes,
-        label: 'Likes'
-      },
-      bookmarks: {
-        count: total_bookmarks,
-        label: 'Saves'
-      },
-      shares: {
-        count: total_shares,
-        label: 'Shares'
-      },
+      total_views: total_views,
+      total_likes: total_likes,
+      total_bookmarks: total_bookmarks,
+      total_shares: total_shares,
       engagement_rate: avg_engagement,
       trending_score: recent_engagement,
       popular_tags: popular_tags,
