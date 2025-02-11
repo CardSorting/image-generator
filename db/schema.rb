@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_10_033550) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_11_033357) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_10_033550) do
     t.datetime "updated_at", null: false
     t.jsonb "metadata"
     t.float "generation_time"
+    t.integer "view_count"
+    t.integer "like_count"
     t.index ["user_id"], name: "index_generations_on_user_id"
   end
 

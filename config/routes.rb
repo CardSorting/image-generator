@@ -6,6 +6,10 @@ Rails.application.routes.draw do
       collection do
         get 'styles/:style/new', to: 'generations#new_style', as: :new_style
       end
+      member do
+        post 'like'
+        delete 'unlike'
+      end
     end
   end
 

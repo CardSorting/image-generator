@@ -8,6 +8,9 @@ class GenerationsController < ApplicationController
   end
 
   def show
+    @generation.increment(:view_count)
+    @generation.save
+
     respond_to do |format|
       format.html
       format.json { 
@@ -20,6 +23,26 @@ class GenerationsController < ApplicationController
         }
       }
     end
+  end
+
+  def like
+    @generation = current_user.generations.find(params[:id])
+    @generation.increment(:like_count)
+    @generation.save
+    redirect_to @generation, notice: 'Liked!'
+  rescue ActiveRecord::RecordNotFound
+    redirect_to generations_path, alert: 'Image generation not found.'
+  end
+
+  def unlike
+    @generation = current_user.generations.find(params[:id])
+    if @generation.like_count > 0
+      @generation.decrement(:like_count)
+      @generation.save
+    end
+    redirect_to @generation, notice: 'Unliked!'
+  rescue ActiveRecord::RecordNotFound
+    redirect_to generations_path, alert: 'Image generation not found.'
   end
 
   def new
