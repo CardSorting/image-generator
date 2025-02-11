@@ -21,27 +21,105 @@
       <%= presenter.title %>
     </h2>
 
+    <%# Trending Badge %>
+    <% if presenter.is_trending? %>
+      <div class="absolute top-4 right-4">
+        <div class="<%= presenter.metric_badge_classes(:trending) %>">
+          <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+          </svg>
+          <span>Trending</span>
+        </div>
+      </div>
+    <% end %>
+
     <%# Example prompt tooltip %>
     <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
       <div class="bg-black/75 text-white text-sm rounded-lg p-2 max-w-[200px]">
         <p class="font-light italic">
-          "<%=presenter.example_prompt %>"
+          "<%= presenter.example_prompt %>"
         </p>
       </div>
     </div>
   </div>
 
   <div class="p-4">
-    <p class="font-handwriting text-sm text-gray-900 truncate">
-      <%= presenter.title %>
-    </p>
-    <p class="text-gray-600 text-xs mt-2">
+    <div class="flex items-center justify-between mb-2">
+      <p class="font-handwriting text-sm text-gray-900 truncate">
+        <%= presenter.title %>
+      </p>
+      
+      <%# Total Generations %>
+      <div class="<%= presenter.metric_badge_classes(:default) %>">
+        <%= pluralize(presenter.total_generations, 'generation') %>
+      </div>
+    </div>
+
+    <p class="text-gray-600 text-xs mb-3">
       <%= presenter.description %>
     </p>
     
+    <%# Social Metrics Grid %>
+    <div class="grid grid-cols-2 gap-2 mb-3">
+      <%# Views %>
+      <div class="<%= presenter.metric_badge_classes(:views) %>">
+        <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        </svg>
+        <span><%= presenter.format_number(presenter.views_count) %></span>
+      </div>
+
+      <%# Likes %>
+      <div class="<%= presenter.metric_badge_classes(:likes) %>">
+        <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+        <span><%= presenter.format_number(presenter.likes_count) %></span>
+      </div>
+
+      <%# Bookmarks %>
+      <div class="<%= presenter.metric_badge_classes(:bookmarks) %>">
+        <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+        </svg>
+        <span><%= presenter.format_number(presenter.bookmarks_count) %></span>
+      </div>
+
+      <%# Shares %>
+      <div class="<%= presenter.metric_badge_classes(:shares) %>">
+        <svg class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+        </svg>
+        <span><%= presenter.format_number(presenter.shares_count) %></span>
+      </div>
+    </div>
+
+    <%# Engagement Rate %>
+    <div class="mb-3">
+      <div class="flex items-center">
+        <div class="<%= presenter.metric_badge_classes(:engagement) %> mr-2">
+          <%= presenter.engagement_rate %>% Engagement
+        </div>
+      </div>
+    </div>
+    
+    <%# Popular Tags %>
+    <% if presenter.popular_tags.any? %>
+      <div class="mb-3">
+        <div class="flex flex-wrap gap-1">
+          <% presenter.popular_tags.each do |tag| %>
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+              #<%= tag %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
     <%# Similar styles %>
     <% if presenter.similar_styles.any? %>
-      <div class="mt-3 flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2 mb-3">
         <% presenter.similar_styles.each do |similar_style| %>
           <span class="text-xs text-gray-500 bg-white/50 rounded-full px-2 py-1">
             Similar to <%= StyleRegistry.get_style(similar_style)[:title] %>
@@ -50,7 +128,7 @@
       </div>
     <% end %>
 
-    <div class="mt-4 flex justify-center">
+    <div class="flex justify-center">
       <%= link_to new_style_generations_path(presenter.style_name), 
           class: "inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200" do %>
         Choose <%= presenter.title %>

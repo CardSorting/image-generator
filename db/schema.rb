@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_11_033357) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_11_042412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,7 +28,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_11_033357) do
     t.float "generation_time"
     t.integer "view_count"
     t.integer "like_count"
+    t.integer "views_count", default: 0, null: false
+    t.integer "likes_count", default: 0, null: false
+    t.integer "bookmarks_count", default: 0, null: false
+    t.integer "shares_count", default: 0, null: false
+    t.decimal "engagement_rate", precision: 5, scale: 2, default: "0.0"
+    t.decimal "trending_score", precision: 10, scale: 2, default: "0.0"
+    t.datetime "last_engagement_at"
+    t.index ["likes_count"], name: "index_generations_on_likes_count"
+    t.index ["style", "trending_score"], name: "index_generations_on_style_and_trending_score"
+    t.index ["trending_score"], name: "index_generations_on_trending_score"
     t.index ["user_id"], name: "index_generations_on_user_id"
+    t.index ["views_count"], name: "index_generations_on_views_count"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
