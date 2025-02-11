@@ -1,24 +1,28 @@
 Rails.application.routes.draw do
+  # Authentication routes
   devise_for :users
   
-  authenticate :user do
-    resources :generations, only: [:index, :new, :create, :show] do
-      collection do
-        get 'styles/:style/new', to: 'generations#new_style', as: :new_style
-      end
-      member do
-        post 'like'
-        delete 'unlike'
-      end
+  # Root route
+  root "home#index"
+  
+  # Generation routes
+  resources :generations do
+    collection do
+      get 'new/:style', action: :new_style, as: :new_style
     end
   end
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # Style catalog routes with analytics
+  resources :styles, only: [:index, :show] do
+    member do
+      get :gallery    # Shows example generations
+      get :reviews    # User reviews and ratings
+      get :analytics  # Advanced stats and trends
+      post :try      # Redirects to new generation with this style
+    end
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
-
-  # Defines the root path route ("/")
-  root "home#index"
+    collection do
+      get :trending # Shows trending styles
+    end
+  end
 end

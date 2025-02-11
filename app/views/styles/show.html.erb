@@ -1,0 +1,206 @@
+<div class="min-h-screen bg-gray-50">
+  <%# Hero Section %>
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
+        <%# Style Info %>
+        <div>
+          <div class="flex items-center">
+            <div class="h-16 w-16 rounded-xl bg-gradient-to-br <%= @presenter.theme_classes %> flex items-center justify-center">
+              <span class="text-2xl font-bold text-white"><%= @presenter.title[0] %></span>
+            </div>
+            <div class="ml-4">
+              <h1 class="text-3xl font-bold text-gray-900"><%= @presenter.title %> Style</h1>
+              <p class="mt-1 text-sm text-gray-500">
+                <%= @style.titleize %> Image Generation
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <p class="text-gray-700 text-lg"><%= @presenter.description %></p>
+          </div>
+
+          <%# Quick Stats %>
+          <dl class="mt-8 grid grid-cols-3 gap-4">
+            <div class="bg-white overflow-hidden rounded-lg border border-gray-200 p-4">
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Generations</dt>
+              <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                <%= number_with_delimiter(@presenter.total_generations) %>
+              </dd>
+            </div>
+
+            <div class="bg-white overflow-hidden rounded-lg border border-gray-200 p-4">
+              <dt class="text-sm font-medium text-gray-500 truncate">Engagement Rate</dt>
+              <dd class="mt-1 text-3xl font-semibold <%= @presenter.engagement_color_class %>">
+                <%= number_to_percentage(@presenter.engagement_rate, precision: 1) %>
+              </dd>
+            </div>
+
+            <div class="bg-white overflow-hidden rounded-lg border border-gray-200 p-4">
+              <dt class="text-sm font-medium text-gray-500 truncate">Average Time</dt>
+              <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                <%= number_with_precision(@stats[:avg_generation_time], precision: 1) %>s
+              </dd>
+            </div>
+          </dl>
+
+          <%# Action Buttons %>
+          <div class="mt-8 flex gap-4">
+            <%= button_to try_style_path(@style), class: "flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors" do %>
+              <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+              Try This Style
+            <% end %>
+
+            <%= link_to analytics_style_path(@style), class: "flex-1 inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors" do %>
+              <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              View Analytics
+            <% end %>
+          </div>
+        </div>
+
+        <%# Featured Generations %>
+        <div class="mt-8 lg:mt-0">
+          <div class="grid grid-cols-3 gap-4">
+            <% @recent_generations.first(6).each do |generation| %>
+              <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
+                <%= image_tag generation.image_url, class: "w-full h-full object-cover" if generation.image_url %>
+              </div>
+            <% end %>
+          </div>
+          <%= link_to gallery_style_path(@style), class: "mt-4 inline-flex items-center text-sm text-blue-600 hover:text-blue-500" do %>
+            View Gallery
+            <svg class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%# Detailed Stats %>
+  <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <%# Social Metrics %>
+      <section class="bg-white rounded-lg shadow">
+        <div class="p-6">
+          <h2 class="text-lg font-medium text-gray-900 mb-4">Social Engagement</h2>
+          <div class="space-y-4">
+            <%# Views %>
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">Views</span>
+                <span class="text-sm text-gray-900"><%= number_with_delimiter(@presenter.views_count) %></span>
+              </div>
+              <div class="h-2 bg-gray-200 rounded-full">
+                <div class="h-2 bg-blue-500 rounded-full" style="width: <%= [@presenter.views_count / 1000.0, 100].min %>%"></div>
+              </div>
+            </div>
+
+            <%# Likes %>
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">Likes</span>
+                <span class="text-sm text-gray-900"><%= number_with_delimiter(@presenter.likes_count) %></span>
+              </div>
+              <div class="h-2 bg-gray-200 rounded-full">
+                <div class="h-2 bg-pink-500 rounded-full" style="width: <%= [@presenter.likes_count / 100.0, 100].min %>%"></div>
+              </div>
+            </div>
+
+            <%# Saves %>
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">Saves</span>
+                <span class="text-sm text-gray-900"><%= number_with_delimiter(@presenter.bookmarks_count) %></span>
+              </div>
+              <div class="h-2 bg-gray-200 rounded-full">
+                <div class="h-2 bg-purple-500 rounded-full" style="width: <%= [@presenter.bookmarks_count / 50.0, 100].min %>%"></div>
+              </div>
+            </div>
+
+            <%# Shares %>
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium text-gray-700">Shares</span>
+                <span class="text-sm text-gray-900"><%= number_with_delimiter(@presenter.shares_count) %></span>
+              </div>
+              <div class="h-2 bg-gray-200 rounded-full">
+                <div class="h-2 bg-green-500 rounded-full" style="width: <%= [@presenter.shares_count / 20.0, 100].min %>%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <%# Popular Tags %>
+      <section class="bg-white rounded-lg shadow">
+        <div class="p-6">
+          <h2 class="text-lg font-medium text-gray-900 mb-4">Popular Tags</h2>
+          <div class="flex flex-wrap gap-2">
+            <% @presenter.popular_tags.each do |tag| %>
+              <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                #<%= tag %>
+              </span>
+            <% end %>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <%# Recent Generations %>
+  <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-gray-900">Recent Generations</h2>
+      <%= link_to gallery_style_path(@style), class: "text-sm text-blue-600 hover:text-blue-500" do %>
+        View All <span aria-hidden="true">→</span>
+      <% end %>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <% @recent_generations.each do |generation| %>
+        <div class="relative group">
+          <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
+            <%= image_tag generation.image_url, class: "w-full h-full object-cover group-hover:opacity-75 transition-opacity" if generation.image_url %>
+          </div>
+          <div class="mt-2 flex justify-between text-sm">
+            <div class="flex items-center text-gray-500">
+              <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              <%= generation.likes_count %>
+            </div>
+            <time class="text-gray-500" datetime="<%= generation.created_at.iso8601 %>">
+              <%= time_ago_in_words(generation.created_at) %> ago
+            </time>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Similar Styles %>
+  <% if @similar_styles&.any? %>
+    <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Similar Styles</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% @similar_styles.each do |style| %>
+          <%= link_to style_path(style), class: "block group" do %>
+            <div class="relative rounded-lg overflow-hidden bg-gradient-to-br <%= StylePresenter.new(style).theme_classes %>">
+              <div class="aspect-video p-6">
+                <h3 class="text-xl font-medium text-white"><%= style.titleize %></h3>
+                <p class="mt-2 text-sm text-white/80"><%= StyleRegistry.get_style(style)[:description] %></p>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

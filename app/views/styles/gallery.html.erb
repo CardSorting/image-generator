@@ -1,0 +1,97 @@
+<div class="min-h-screen bg-gray-50">
+  <%# Navigation Bar %>
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center">
+          <%= link_to style_path(@style), class: "flex items-center text-gray-500 hover:text-gray-700" do %>
+            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Style Details
+          <% end %>
+        </div>
+        <h1 class="text-xl font-semibold text-gray-900">
+          <%= @presenter.title %> Gallery
+        </h1>
+        <div class="flex items-center space-x-4">
+          <%= form_tag gallery_style_path(@style), method: :get, class: "flex items-center space-x-2" do %>
+            <select name="sort" class="text-sm border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <option value="newest" <%= 'selected' if params[:sort] == 'newest' %>>Newest</option>
+              <option value="popular" <%= 'selected' if params[:sort] == 'popular' %>>Most Popular</option>
+              <option value="trending" <%= 'selected' if params[:sort] == 'trending' %>>Trending</option>
+            </select>
+            <button type="submit" class="p-2 text-gray-400 hover:text-gray-500">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+              </svg>
+            </button>
+          <% end %>
+
+          <%= button_to try_style_path(@style), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" do %>
+            <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Try Style
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <%# Gallery Grid %>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <% @generations.each do |generation| %>
+        <div class="group relative">
+          <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
+            <%= image_tag generation.image_url, class: "w-full h-full object-cover group-hover:opacity-75 transition-opacity" if generation.image_url %>
+            
+            <%# Hover Overlay %>
+            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <div class="text-white text-center p-4">
+                <div class="flex items-center justify-center space-x-4 mb-2">
+                  <div class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                    <%= generation.likes_count %>
+                  </div>
+                  <div class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                    </svg>
+                    <%= generation.bookmarks_count %>
+                  </div>
+                </div>
+                <div class="text-xs">
+                  <%= time_ago_in_words(generation.created_at) %> ago
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <%# Image Details %>
+          <div class="mt-2">
+            <div class="flex flex-wrap gap-1">
+              <% generation.filtered_metadata.fetch('tags', '').split(',').take(3).each do |tag| %>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  #<%= tag.strip %>
+                </span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Pagination %>
+    <% if @generations.total_pages > 1 %>
+      <div class="mt-8 flex justify-center">
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+          <%= paginate @generations, window: 2, theme: 'tailwind' %>
+        </nav>
+      </div>
+    <% end %>
+  </div>
+</div>

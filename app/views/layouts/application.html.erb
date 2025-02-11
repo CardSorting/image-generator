@@ -1,60 +1,68 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Image Generator" %></title>
+    <title>Image Generator</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
-
-    <%= yield :head %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <%= javascript_importmap_tags %>
   </head>
 
   <body class="min-h-screen bg-gray-50">
-    <nav class="bg-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+    <header class="bg-white shadow">
+      <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 justify-between items-center">
           <div class="flex">
-            <%= link_to "AI Image Generator", root_path, class: "flex items-center px-2 text-gray-900 font-medium" %>
+            <%= link_to root_path, class: "flex items-center" do %>
+              <span class="text-xl font-bold text-gray-900">Image Generator</span>
+            <% end %>
+
+            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <%= link_to "Home", root_path, class: "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900" %>
+              <%= link_to "Styles", styles_path, class: "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900" %>
+              <%= link_to "Gallery", generations_path, class: "inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900" %>
+            </div>
           </div>
+
           <div class="flex items-center space-x-4">
             <% if user_signed_in? %>
               <%= link_to "Create New Image", new_generation_path, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700" %>
-              <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "text-gray-600 hover:text-gray-900" %>
+              <%= link_to "Sign out", destroy_user_session_path, data: { turbo_method: :delete }, class: "text-gray-600 hover:text-gray-900" %>
             <% else %>
               <%= link_to "Sign in", new_user_session_path, class: "text-gray-600 hover:text-gray-900" %>
             <% end %>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
 
-    <% if notice %>
-      <div class="bg-blue-50 p-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p class="text-blue-700"><%= notice %></p>
+    <main>
+      <% if notice %>
+        <div class="max-w-7xl mx-auto mt-4 px-4 sm:px-6 lg:px-8">
+          <div class="rounded-md bg-blue-50 p-4">
+            <div class="flex">
+              <div class="ml-3">
+                <p class="text-sm font-medium text-blue-800"><%= notice %></p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    <% end %>
-
-    <% if alert %>
-      <div class="bg-red-50 p-4">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p class="text-red-700"><%= alert %></p>
+      <% end %>
+      
+      <% if alert %>
+        <div class="max-w-7xl mx-auto mt-4 px-4 sm:px-6 lg:px-8">
+          <div class="rounded-md bg-red-50 p-4">
+            <div class="flex">
+              <div class="ml-3">
+                <p class="text-sm font-medium text-red-800"><%= alert %></p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <%= yield %>
     </main>
   </body>
