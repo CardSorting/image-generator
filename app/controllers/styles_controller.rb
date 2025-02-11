@@ -6,6 +6,16 @@ class StylesController < ApplicationController
     styles = Generation::STYLES
     @styles = styles.map { |style| StylePresenter.new(style) }
     @trending_styles = @styles.select(&:is_trending?).first(3)
+    
+    # Paginate styles for infinite scrolling
+    @paginated_styles = Kaminari.paginate_array(@styles)
+                               .page(params[:page])
+                               .per(12)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def category

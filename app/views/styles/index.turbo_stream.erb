@@ -1,0 +1,5 @@
+<%= turbo_stream.append "styles-grid" do %>
+  <% @paginated_styles.each do |presenter| %>
+    <%= render "style_card", presenter: presenter %>
+  <% end %>
+<% end %>
