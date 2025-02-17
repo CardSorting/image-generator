@@ -24,7 +24,7 @@ gem "devise", "~> 4.9"
 gem "aws-sdk-s3", "~> 1.142"
 
 # Background job processing
-gem "sidekiq", "~> 7.2"
+gem "sidekiq", "~> 7.3"
 
 # Environment variables management
 gem "dotenv-rails", "~> 3.0"
