@@ -21,7 +21,7 @@ gem "jbuilder"
 gem "devise", "~> 4.9"
 
 # AWS SDK for S3 storage
-gem "aws-sdk-s3", "~> 1.142"
+gem "aws-sdk-s3", "~> 1.182"
 
 # Background job processing
 gem "sidekiq", "~> 7.2"
